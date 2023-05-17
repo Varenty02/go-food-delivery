@@ -22,6 +22,7 @@ func NewFindRestaurantBiz(store FindRestaurantStore) *findRestaurantBiz {
 }
 func (biz *findRestaurantBiz) FindDataWithCondition(context context.Context, condition map[string]interface{}, moreKey ...string) (*restaurantmodel.Restaurant, error) {
 	data, err := biz.store.FindDataWithCondition(context, condition)
+
 	if err != nil {
 		return nil, err
 	}

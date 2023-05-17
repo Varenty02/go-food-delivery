@@ -6,6 +6,8 @@ import (
 	"strings"
 )
 
+const EnityName = "restaurant"
+
 type Restaurant struct {
 	common.SQLModel `json:",inline"`
 	Name            string `json:"name" gorm:"column:name;"`
@@ -39,3 +41,10 @@ func (RestaurantCreate) TableName() string { return "restaurants" }
 var (
 	ErrNameIsEmpty = errors.New("name can not empty")
 )
+
+//func (r *Restaurant) Mask(isAdminOrOwner bool) {
+//	r.GenUID(common.DbTypeRestaurant)
+//}
+//func (r *RestaurantCreate) Mask(isAdminOrOwner bool) {
+//	r.GenUID(common.DbTypeRestaurant)
+//}

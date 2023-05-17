@@ -2,7 +2,9 @@ package restaurantstorage
 
 import (
 	"context"
+	"g05-fooddelivery/module/common"
 	restaurantmodel "g05-fooddelivery/module/restaurant/model"
+	"gorm.io/gorm"
 )
 
 func (s *sqlStore) FindDataWithCondition(
@@ -14,7 +16,10 @@ func (s *sqlStore) FindDataWithCondition(
 	if err := s.db.
 		Where(condition).
 		First(&data).Error; err != nil {
-		return nil, err
+		if err == gorm.ErrRecordNotFound {
+			return nil, common.RecordNotFound
+		}
+		return nil, common.ErrDB(err)
 	}
 	return &data, nil
 }

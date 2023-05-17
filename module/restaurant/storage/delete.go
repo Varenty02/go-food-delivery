@@ -2,6 +2,7 @@ package restaurantstorage
 
 import (
 	"context"
+	"g05-fooddelivery/module/common"
 	restaurantmodel "g05-fooddelivery/module/restaurant/model"
 )
 
@@ -12,7 +13,7 @@ func (s *sqlStore) Delete(
 	if err := s.db.Table(restaurantmodel.Restaurant{}.TableName()).
 		Where("id=?", id).
 		Updates(map[string]interface{}{"status": 0}).Error; err != nil {
-		return err
+		return common.ErrDB(err)
 	}
 	return nil
 }

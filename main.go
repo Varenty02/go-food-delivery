@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"g05-fooddelivery/module/component/appctx"
+	"g05-fooddelivery/module/restaurant/middleware"
 	restaurantmodel "g05-fooddelivery/module/restaurant/model"
 	"g05-fooddelivery/module/restaurant/transport/ginrestaurant"
 	"github.com/gin-gonic/gin"
@@ -30,6 +31,7 @@ func main() {
 	//}
 	//Lấy 1 cái server
 	r := gin.Default()
+	r.Use(middleware.Recover(appctx))
 	//Đăng ký đường link /ping cho server
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
@@ -38,9 +40,10 @@ func main() {
 	})
 
 	//post
+	//v1 := r.Group("/v1", middleware.Recover(appctx))
 	v1 := r.Group("/v1")
 	restaurant := v1.Group("/restaurants")
-	restaurant.POST("/", ginrestaurant.CreateRestaurant(appctx))
+	restaurant.POST("/", middleware.Recover(appctx), ginrestaurant.CreateRestaurant(appctx))
 
 	//get
 	restaurant.GET("/:id", ginrestaurant.FindRestaurant(appctx))

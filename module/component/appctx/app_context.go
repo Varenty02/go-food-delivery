@@ -2,6 +2,7 @@ package appctx
 
 import "gorm.io/gorm"
 
+// đồ chơi nội bộ
 type AppContext interface {
 	GetMainDBConnection() *gorm.DB
 }
