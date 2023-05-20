@@ -7,6 +7,7 @@ type Paging struct {
 	Limit int   `json:"limit" form:"limit"`
 	Total int64 `json:"total" form:"total"`
 	//Tối ưu tốc độ phân trang
+	//cursor xác định cột mốc khóa chính ở đâu
 	FakeCursor string `json:"cursor" form:"cursor"`
 	NextCursor string `json:"next_cursor"`
 }
