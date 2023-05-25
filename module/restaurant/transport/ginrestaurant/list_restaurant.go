@@ -1,10 +1,11 @@
 package ginrestaurant
 
 import (
-	"g05-fooddelivery/module/common"
-	"g05-fooddelivery/module/component/appctx"
+	common2 "g05-fooddelivery/common"
+	"g05-fooddelivery/component/appctx"
 	restaurantbiz "g05-fooddelivery/module/restaurant/biz"
 	restaurantmodel "g05-fooddelivery/module/restaurant/model"
+	restaurantrepo "g05-fooddelivery/module/restaurant/repository"
 	restaurantstorage "g05-fooddelivery/module/restaurant/storage"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -13,19 +14,20 @@ import (
 func ListRestaurant(appCtx appctx.AppContext) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		db := appCtx.GetMainDBConnection()
-		var pagingData common.Paging
+		var pagingData common2.Paging
 		if err := c.ShouldBind(&pagingData); err != nil {
-			panic(common.ErrInvalidRequest(err))
+			panic(common2.ErrInvalidRequest(err))
 		}
 		pagingData.Fulfill()
 		var filter restaurantmodel.Filter
 		if err := c.ShouldBind(&filter); err != nil {
-			panic(common.ErrInvalidRequest(err))
+			panic(common2.ErrInvalidRequest(err))
 		}
 		filter.Status = []int{1}
 		var result []restaurantmodel.Restaurant
 		store := restaurantstorage.NewSQLStore(db)
-		biz := restaurantbiz.NewListRestaurantBiz(store)
+		repo := restaurantrepo.NewListRestaurantRepo(store)
+		biz := restaurantbiz.NewListRestaurantBiz(repo)
 		result, err := biz.ListDataWithCondition(c.Request.Context(), &filter, &pagingData)
 		if err != nil {
 			panic(err)
@@ -36,6 +38,6 @@ func ListRestaurant(appCtx appctx.AppContext) func(c *gin.Context) {
 		//for i := range result {
 		//	result[i].Mask(false)
 		//}
-		c.JSON(http.StatusOK, common.NewSuccessResponse(result, pagingData, filter))
+		c.JSON(http.StatusOK, common2.NewSuccessResponse(result, pagingData, filter))
 	}
 }

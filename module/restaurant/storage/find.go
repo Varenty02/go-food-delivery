@@ -2,7 +2,7 @@ package restaurantstorage
 
 import (
 	"context"
-	"g05-fooddelivery/module/common"
+	"g05-fooddelivery/common"
 	restaurantmodel "g05-fooddelivery/module/restaurant/model"
 	"gorm.io/gorm"
 )

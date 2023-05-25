@@ -2,12 +2,12 @@ package restaurantbiz
 
 import (
 	"context"
-	"g05-fooddelivery/module/common"
+	"g05-fooddelivery/common"
 	restaurantmodel "g05-fooddelivery/module/restaurant/model"
 )
 
-type ListRestaurantStore interface {
-	ListDataWithCondition(
+type ListRestaurantRepo interface {
+	ListRestaurant(
 		context context.Context,
 		filter *restaurantmodel.Filter,
 		paging *common.Paging,
@@ -15,11 +15,11 @@ type ListRestaurantStore interface {
 	) ([]restaurantmodel.Restaurant, error)
 }
 type listRestaurantBiz struct {
-	store ListRestaurantStore
+	repo ListRestaurantRepo
 }
 
-func NewListRestaurantBiz(store ListRestaurantStore) *listRestaurantBiz {
-	return &listRestaurantBiz{store: store}
+func NewListRestaurantBiz(repo ListRestaurantRepo) *listRestaurantBiz {
+	return &listRestaurantBiz{repo: repo}
 }
 func (biz *listRestaurantBiz) ListDataWithCondition(
 	context context.Context,
@@ -27,7 +27,7 @@ func (biz *listRestaurantBiz) ListDataWithCondition(
 	paging *common.Paging,
 	moreKey ...string,
 ) ([]restaurantmodel.Restaurant, error) {
-	data, err := biz.store.ListDataWithCondition(context, filter, paging)
+	data, err := biz.repo.ListRestaurant(context, filter, paging, "User")
 	if err != nil {
 		return nil, err
 	}

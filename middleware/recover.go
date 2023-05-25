@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"g05-fooddelivery/module/common"
-	"g05-fooddelivery/module/component/appctx"
+	"g05-fooddelivery/common"
+	"g05-fooddelivery/component/appctx"
 	"github.com/gin-gonic/gin"
 )
 

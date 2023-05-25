@@ -1,7 +1,7 @@
 package ginrestaurant
 
 import (
-	"g05-fooddelivery/module/component/appctx"
+	"g05-fooddelivery/component/appctx"
 	restaurantbiz "g05-fooddelivery/module/restaurant/biz"
 	restaurantstorage "g05-fooddelivery/module/restaurant/storage"
 	"github.com/gin-gonic/gin"
