@@ -16,7 +16,7 @@ type Restaurant struct {
 	//ĐỂ trống gorm thì luôn luôn mapping ở lúc create
 	UserId    int                 `json:"-" gorm:"column:user_id;"`
 	User      *common2.SimpleUser `json:"user" gorm:"preload:false;"`
-	LikeCount int                 `json:"like_count" gorm:"-"`
+	LikeCount int                 `json:"like_count" gorm:"like_count"`
 }
 
 type RestaurantCreate struct {

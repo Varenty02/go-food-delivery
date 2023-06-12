@@ -70,7 +70,7 @@ func (s *sqlStore) GetUsersLikeRestaurant(ctx context.Context,
 		result[i].User.UpdatedAt = nil
 		users[i] = *result[i].User
 		if i == len(result)-1 {
-			cursorStr := fmt.Sprintf("#{item.CreatedAt.Format(timeLayout)}")
+			cursorStr := fmt.Sprintf("%v", item.CreatedAt.Format(timeLayout))
 			paging.NextCursor = cursorStr
 		}
 	}

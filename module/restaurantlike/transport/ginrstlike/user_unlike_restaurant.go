@@ -10,7 +10,7 @@ import (
 	"strconv"
 )
 
-func UserUnlikeRestaurant(appCxt appctx.AppContext) gin.HandlerFunc {
+func UserUnlikeRestaurant(appCtx appctx.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("id")
 		requester := c.MustGet(common2.CurrentUser).(common2.Requester)
@@ -18,8 +18,10 @@ func UserUnlikeRestaurant(appCxt appctx.AppContext) gin.HandlerFunc {
 		if err != nil {
 			panic(common2.ErrInvalidRequest(err))
 		}
-		store := restaurantlikestorage.NewSQLStore(appCxt.GetMainDBConnection())
-		biz := reslikebiz.NewUserUnlikeRestaurantBiz(store)
+		store := restaurantlikestorage.NewSQLStore(appCtx.GetMainDBConnection())
+		//decStore := restaurantstorage.NewSQLStore(appCtx.GetMainDBConnection())
+		ps := appCtx.GetPubSub()
+		biz := reslikebiz.NewUserUnlikeRestaurantBiz(store, ps)
 		if err := biz.UnlikeRestaurant(c.Request.Context(), requester.GetUserId(), resId); err != nil {
 			panic(err)
 		}

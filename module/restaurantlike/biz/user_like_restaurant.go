@@ -4,19 +4,21 @@ import (
 	"context"
 	"g05-fooddelivery/common"
 	restaurantlikemodel "g05-fooddelivery/module/restaurantlike/model"
+	"g05-fooddelivery/pubsub"
 	"log"
-	"time"
 )
 
 type UserLikeRestaurantStore interface {
 	Create(ctx context.Context, data *restaurantlikemodel.Like) error
 }
-type IncLikeCountResStore interface {
-	IncreaseLikeCount(ctx context.Context, id int) error
-}
+
+//	type IncLikeCountResStore interface {
+//		IncreaseLikeCount(ctx context.Context, id int) error
+//	}
 type userLikeRestaurantBiz struct {
-	store    UserLikeRestaurantStore
-	incStore IncLikeCountResStore
+	store UserLikeRestaurantStore
+	//incStore IncLikeCountResStore
+	ps pubsub.Pubsub
 }
 
 //type userLikeRestaurantBiz struct {
@@ -25,11 +27,12 @@ type userLikeRestaurantBiz struct {
 //}
 
 func NewUserLikeRestaurantBiz(
-	store UserLikeRestaurantStore, incStore IncLikeCountResStore) *userLikeRestaurantBiz {
+	store UserLikeRestaurantStore, ps pubsub.Pubsub) *userLikeRestaurantBiz {
 	return &userLikeRestaurantBiz{
 
-		store:    store,
-		incStore: incStore,
+		store: store,
+		//incStore: incStore,
+		ps: ps,
 	}
 }
 
@@ -48,14 +51,24 @@ func (biz *userLikeRestaurantBiz) LikeRestaurant(ctx context.Context, data *rest
 	if err != nil {
 		return restaurantlikemodel.ErrCannotLikeRestaurant(err)
 	}
-	//biz.pubsub.Publish(ctx, common2.TopicUserLikeRestaurant, pubsub.NewMessage(data))
-	go func() {
-		defer common.AppRecover()
-		time.Sleep(time.Second * 3)
-		if err := biz.incStore.IncreaseLikeCount(ctx, data.RestaurantId); err != nil {
-			log.Println(err)
-		}
-	}()
+	//send message
+	if err := biz.ps.Publish(ctx, common.TopicUserLikeRestaurant, pubsub.NewMessage(data)); err != nil {
+		log.Println(err)
+	}
+
+	//side effect
+	//j := asyncjob.NewJob(func(ctx context.Context) error {
+	//	return biz.incStore.IncreaseLikeCount(ctx, data.RestaurantId)
+	//})
+	//if err := asyncjob.NewGroup(true, j).Run(ctx); err != nil {
+	//	log.Println(err)
+	//}
+	//go func() {
+	//	defer common.AppRecover()
+	//	if err := biz.incStore.IncreaseLikeCount(ctx, data.RestaurantId); err != nil {
+	//		log.Println(err)
+	//	}
+	//}()
 
 	return nil
 }

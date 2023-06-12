@@ -40,6 +40,7 @@ func NewCustomError(root error, msg string, key string) *AppError {
 	}
 	return NewErrorResponse(errors.New(msg), msg, msg, key)
 }
+
 func (e *AppError) RootError() error {
 	if err, ok := e.RootErr.(*AppError); ok {
 		return err.RootError()
@@ -49,6 +50,7 @@ func (e *AppError) RootError() error {
 func (e *AppError) Error() string {
 	return e.RootError().Error()
 }
+
 func ErrDB(err error) *AppError {
 	return NewFullErrorResponse(http.StatusInternalServerError, err, "something went wrong in the server", err.Error(), "ErrInternal")
 	//return NewErrorResponse(err, "something went wrong with DB", err.Error(), "DB_ERROR")

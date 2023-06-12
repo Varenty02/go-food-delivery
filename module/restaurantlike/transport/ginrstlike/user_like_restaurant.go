@@ -3,7 +3,6 @@ package ginrstlike
 import (
 	common2 "g05-fooddelivery/common"
 	"g05-fooddelivery/component/appctx"
-	restaurantstorage "g05-fooddelivery/module/restaurant/storage"
 	reslikebiz "g05-fooddelivery/module/restaurantlike/biz"
 	restaurantlikemodel "g05-fooddelivery/module/restaurantlike/model"
 	restaurantlikestorage "g05-fooddelivery/module/restaurantlike/storage"
@@ -25,8 +24,8 @@ func UserLikeRestaurant(appCtx appctx.AppContext) gin.HandlerFunc {
 			UserId:       requester.GetUserId(),
 		}
 		store := restaurantlikestorage.NewSQLStore(appCtx.GetMainDBConnection())
-		incStore := restaurantstorage.NewSQLStore(appCtx.GetMainDBConnection())
-		biz := reslikebiz.NewUserLikeRestaurantBiz(store, incStore)
+		//incStore := restaurantstorage.NewSQLStore(appCtx.GetMainDBConnection())
+		biz := reslikebiz.NewUserLikeRestaurantBiz(store, appCtx.GetPubSub())
 		if err := biz.LikeRestaurant(c.Request.Context(), &data); err != nil {
 			panic(err)
 		}
